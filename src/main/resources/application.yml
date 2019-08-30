@@ -1,0 +1,35 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: root
+    url: jdbc:mysql://localhost:3306/mq?tinyInt1isBit=false&useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: admin
+    password: admin
+    listener:
+      simple:
+        concurrency: 10
+        max-concurrency: 20
+        prefetch: 5
+        acknowledge-mode: manual
+  application:
+    name: mq
+server:
+  port: 8080
+  servlet:
+    context-path: /mq
+
+
+mybatis-plus:
+  mapper-locations: classpath*:**/*Mapper.xml
+  typeAliasesPackage: com.example.rabbitmq.entity
+  global-config:
+    #驼峰下划线转换
+    db-column-underline: true
+  configuration:
+    #配置返回数据库(column下划线命名&&返回java实体是驼峰命名)，自动匹配无需as（没开启这个，SQL需要写as： select user_id as userId）
+    map-underscore-to-camel-case: true
+    cache-enabled: false
