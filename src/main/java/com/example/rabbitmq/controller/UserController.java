@@ -1,8 +1,12 @@
 package com.example.rabbitmq.controller;
 
+import com.example.rabbitmq.common.MyFirstJob;
 import com.example.rabbitmq.config.MqConstants;
+import org.quartz.*;
+import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,6 +23,11 @@ public class UserController {
    private static int mobile = 0;
     @Autowired
     RabbitTemplate template;
+
+
+    @Autowired
+    private static SchedulerFactoryBean schedulerFactoryBean;
+
     /**
      * 发送消息到对列(普通单一队列测试)
      */
@@ -77,5 +86,49 @@ public class UserController {
                 e.printStackTrace();
             }
         }
+    }
+
+    /**
+     * 测试定时任务
+     */
+    @RequestMapping("/testTime")
+    public void testTime(){
+
+        try{
+            Scheduler scheduler = new StdSchedulerFactory("quartz.properties").getScheduler();
+            //Scheduler scheduler = schedulerFactoryBean.getScheduler();
+            /*HolidayCalendar calendar = new HolidayCalendar();
+            calendar.addExcludedDate(new Date(2019,5,5));
+            scheduler.addCalendar("myCalander",calendar,false,false);*/
+            JobDetail jobDetail = JobBuilder.newJob(MyFirstJob.class).withIdentity("first", "first").build();
+            jobDetail.getJobDataMap().put("param","aaa");
+            /*CronScheduleBuilder scheduleBuilder = CronScheduleBuilder
+                    .cronSchedule("0/5 * * * * ?");
+            Trigger trigger = TriggerBuilder.newTrigger().withIdentity("first", "first").withSchedule(scheduleBuilder).build();
+            scheduler.scheduleJob(jobDetail, trigger);*/
+
+            /*SimpleTrigger simpleTrigger = TriggerBuilder.newTrigger()
+                    .withIdentity("first","first").
+                    startAt(new Date())
+                    .withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInSeconds(10).withRepeatCount(3))
+                    .forJob(jobDetail).build();
+            scheduler.scheduleJob(jobDetail, simpleTrigger);*/
+
+            CronTrigger cronTrigger = TriggerBuilder.newTrigger().
+                    withIdentity("first","first")
+                    .withSchedule(CronScheduleBuilder.cronSchedule("0/2 * * * * ?"))
+                    .build();
+
+            scheduler.scheduleJob(jobDetail, cronTrigger);
+
+            scheduler.start();
+
+            System.out.println("==============");
+            Thread.sleep(60000);
+            scheduler.shutdown();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 }
