@@ -1,7 +1,11 @@
 package com.example.rabbitmq.controller;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.example.rabbitmq.common.MyFirstJob;
+import com.example.rabbitmq.common.TreeUtil;
 import com.example.rabbitmq.config.MqConstants;
+import com.example.rabbitmq.entity.Cat;
+import com.example.rabbitmq.mapper.CatMapper;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -11,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -24,7 +29,11 @@ public class UserController {
     @Autowired
     RabbitTemplate template;
 
+    @Autowired
+    TreeUtil util;
 
+    @Autowired
+    CatMapper catMapper;
     @Autowired
     private static SchedulerFactoryBean schedulerFactoryBean;
 
@@ -131,4 +140,15 @@ public class UserController {
         }
 
     }
+    @RequestMapping(value = "/getCats",method = RequestMethod.GET)
+    public List<Cat> getCats(Integer id){
+        return util.getTree(id);
+    }
+
+    @RequestMapping(value = "/getCats2",method = RequestMethod.GET)
+    public List<Cat> getCats2(Integer id){
+        List<Cat> cats = catMapper.selectList(new EntityWrapper<>());
+        return util.getTreeCat(cats,id);
+    }
+
 }

@@ -25,8 +25,8 @@ public class MpGenerator {
      * </p>
      */
     public static void main(String[] args) {
-        String outputDir = "D:/myOwnStudyProject/rabbit-mq/src/main/java";
-        String viewOutputDir = "D:/myOwnStudyProject/rabbit-mq/src/main/resources/mapper/";
+        String outputDir = "E:/myProject/rabbit-mq/rabbit-mq/src/main/java";
+        String viewOutputDir = "E:/myProject/rabbit-mq/src/main/resources/mapper/";
         AutoGenerator mpg = new AutoGenerator();
         // 全局配置
         GlobalConfig gc = new GlobalConfig();
@@ -59,7 +59,7 @@ public class MpGenerator {
         // 表名生成策略
         strategy.setNaming(NamingStrategy.underline_to_camel);
         // 需要生成的表
-        strategy.setInclude(new String[]{"product"});
+        strategy.setInclude(new String[]{"cat"});
         // strategy.setExclude(new String[]{"test"}); // 排除生成的表
         // 自定义实体父类
         // strategy.setSuperEntityClass("com.baomidou.demo.TestEntity");
