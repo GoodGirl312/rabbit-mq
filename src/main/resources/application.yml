@@ -18,7 +18,7 @@ spring:
   application:
     name: mq
 server:
-  port: 8080
+  port: 8088
   servlet:
     context-path: /mq
 
