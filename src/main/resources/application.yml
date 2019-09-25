@@ -14,6 +14,7 @@ spring:
         concurrency: 10
         max-concurrency: 20
         prefetch: 5
+        #消息确认处理机制有三种：Auto - 自动、Manual - 手动、None - 无需确认，而确认机制需要 listener 实现 ChannelAwareMessageListener 接口
         acknowledge-mode: manual
   application:
     name: mq
